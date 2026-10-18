@@ -49,5 +49,5 @@ using System.Windows;
 //      修订号
 //
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 [assembly: Guid("EE7A7F67-5F69-4789-95C3-AE8B4E04F6A9")]

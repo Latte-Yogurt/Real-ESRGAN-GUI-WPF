@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -226,10 +226,32 @@ namespace Real_ESRGAN_GUI_WPF
                 FileName = Parameters.RealesrganPath,
                 Arguments = arguments,
                 UseShellExecute = false,
-                CreateNoWindow = HideProcessCheckBox.IsChecked == true
+                CreateNoWindow = HideProcessCheckBox.IsChecked == true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
-            Process.Start(startInfo);
+            try
+            {
+                using (var proc = Process.Start(startInfo))
+                {
+                    string stderr = proc.StandardError.ReadToEnd();
+                    string stdout = proc.StandardOutput.ReadToEnd();
+                    proc.WaitForExit();
+
+                    if (proc.ExitCode != 0)
+                    {
+                        string detail = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
+                        ShowMessage($"Real-ESRGAN 执行失败（退出码 {proc.ExitCode}）：{detail}",
+                                    Localization.Get("ErrorTitle"), MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowMessage($"启动 Real-ESRGAN 失败：{ex.Message}",
+                            Localization.Get("ErrorTitle"), MessageBoxImage.Error);
+            }
         }
 
         // ---------- 事件处理 ----------
